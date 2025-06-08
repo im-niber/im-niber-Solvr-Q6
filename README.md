@@ -97,3 +97,14 @@ pnpm build
 - `POST /api/sleep`: 새 수면 기록 추가
 - `PUT /api/sleep/:id`: 수면 기록 수정
 - `DELETE /api/sleep/:id`: 수면 기록 삭제
+
+## Changelog
+
+### v1.1.0 (2024-XX-XX)
+
+- **New Feature: 수면 통계 기능 추가**
+  - 사용자의 수면 데이터를 기반으로 한 통계 정보를 차트로 제공합니다.
+  - 주간 수면 시간 변화를 보여주는 라인 차트와 일일 평균 수면 시간을 나타내는 바 차트가 포함됩니다.
+  - 테스트를 위한 더미 데이터 생성 기능이 추가되었습니다.
+- **API Endpoint 추가:**
+  - `GET /api/sleep/stats`: 특정 유저의 수면 통계 데이터 조회
