@@ -1,4 +1,4 @@
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, and, gte } from 'drizzle-orm'
 import { sleepRecords, NewSleepRecord, SleepRecord } from '../db/schema'
 import { Database } from '../types/database'
 
@@ -36,11 +36,39 @@ export const createSleepService = ({ db }: SleepServiceDeps) => {
     return result.length > 0
   }
 
+  const getSleepStats = async (userId: number) => {
+    const now = new Date()
+    const aWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+    const weeklySleepData = await db
+      .select({
+        date: sleepRecords.sleep_time,
+        duration: sleepRecords.duration
+      })
+      .from(sleepRecords)
+      .where(
+        and(
+          eq(sleepRecords.userId, userId),
+          gte(sleepRecords.sleep_time, aWeekAgo.toISOString())
+        )
+      )
+      .orderBy(desc(sleepRecords.sleep_time))
+
+    const dailyAverageSleep =
+      weeklySleepData.reduce((acc, record) => acc + record.duration, 0) / (weeklySleepData.length || 1)
+
+    return {
+      weeklySleepData,
+      dailyAverageSleep: parseFloat(dailyAverageSleep.toFixed(2))
+    }
+  }
+
   return {
     getAllSleepRecords,
     createSleepRecord,
     updateSleepRecord,
-    deleteSleepRecord
+    deleteSleepRecord,
+    getSleepStats
   }
 }
 

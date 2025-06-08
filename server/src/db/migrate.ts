@@ -5,6 +5,8 @@ import { dirname } from 'path'
 import env from '../config/env'
 import { users, sleepRecords } from './schema'
 import { UserRole } from '../types'
+import { faker } from '@faker-js/faker'
+import { eq } from 'drizzle-orm'
 
 // 데이터베이스 디렉토리 생성 함수
 async function ensureDatabaseDirectory() {
@@ -43,6 +45,23 @@ const initialUsers = [
     updatedAt: new Date().toISOString()
   }
 ]
+
+// 더미 수면 기록 생성 함수
+function createDummySleepRecord(userId: number) {
+  const sleepTime = faker.date.recent({ days: 30 })
+  const wakeTime = new Date(sleepTime.getTime() + faker.number.int({ min: 4 * 60, max: 10 * 60 }) * 60 * 1000)
+  const duration = (wakeTime.getTime() - sleepTime.getTime()) / (1000 * 60 * 60)
+
+  return {
+    userId,
+    sleep_time: sleepTime.toISOString(),
+    wake_time: wakeTime.toISOString(),
+    duration: parseFloat(duration.toFixed(2)),
+    notes: faker.lorem.sentence(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+}
 
 // 데이터베이스 마이그레이션 및 초기 데이터 삽입
 async function runMigration() {
@@ -88,14 +107,26 @@ async function runMigration() {
     console.log('초기 데이터 삽입 중...')
 
     // 기존 데이터 확인
-    const existingUsers = db.select().from(users)
+    const existingUsers = await db.select().from(users).execute()
 
-    if ((await existingUsers).length === 0) {
+    if (existingUsers.length === 0) {
       // 초기 사용자 데이터 삽입
-      for (const user of initialUsers) {
-        await db.insert(users).values(user)
-      }
+      await db.insert(users).values(initialUsers)
       console.log(`${initialUsers.length}명의 사용자가 추가되었습니다.`)
+
+      // '일반 사용자'에게 더미 수면 데이터 추가
+      const regularUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, 'user@example.com'))
+        .limit(1)
+        .execute()
+
+      if (regularUser.length > 0) {
+        const dummySleepRecords = Array.from({ length: 30 }, () => createDummySleepRecord(regularUser[0].id))
+        await db.insert(sleepRecords).values(dummySleepRecords)
+        console.log(`${dummySleepRecords.length}개의 더미 수면 기록이 추가되었습니다.`)
+      }
     } else {
       console.log('사용자 데이터가 이미 존재합니다. 초기 데이터 삽입을 건너뜁니다.')
     }

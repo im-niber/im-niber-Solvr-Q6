@@ -6,9 +6,10 @@ export function createSleepRoutes(context: AppContext) {
   const sleepController = createSleepController(context)
 
   return async function (fastify: FastifyInstance) {
-    fastify.get('/', sleepController.getSleepRecords)
+    fastify.get('/', sleepController.getAllSleepRecords)
     fastify.post('/', sleepController.createSleepRecord)
     fastify.put('/:id', sleepController.updateSleepRecord)
     fastify.delete('/:id', sleepController.deleteSleepRecord)
+    fastify.get('/stats', sleepController.getSleepStats)
   }
 } 
