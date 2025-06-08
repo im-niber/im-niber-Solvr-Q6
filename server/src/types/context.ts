@@ -1,5 +1,11 @@
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+import * as schema from '../db/schema'
 import { UserService } from '../services/userService'
+import { SleepService } from '../services/sleepService'
 
-export type AppContext = {
+export type AppDb = BetterSQLite3Database<typeof schema>
+
+export interface AppContext {
   userService: UserService
+  sleepService: SleepService
 }
