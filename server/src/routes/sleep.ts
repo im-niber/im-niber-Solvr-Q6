@@ -11,5 +11,6 @@ export function createSleepRoutes(context: AppContext) {
     fastify.put('/:id', sleepController.updateSleepRecord)
     fastify.delete('/:id', sleepController.deleteSleepRecord)
     fastify.get('/stats', sleepController.getSleepStats)
+    fastify.get('/advice', sleepController.getSleepAdvice)
   }
 } 
