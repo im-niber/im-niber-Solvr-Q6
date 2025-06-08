@@ -1,4 +1,5 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core'
+import { relations } from 'drizzle-orm'
 
 // 사용자 테이블 스키마
 export const users = sqliteTable('users', {
@@ -16,7 +17,40 @@ export const users = sqliteTable('users', {
     .$defaultFn(() => new Date().toISOString())
 })
 
+export const usersRelations = relations(users, ({ many }) => ({
+  sleepRecords: many(sleepRecords),
+}))
+
 // 사용자 타입 정의
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 export type UpdateUser = Partial<Omit<NewUser, 'id' | 'createdAt'>>
+
+// 수면 기록 테이블 스키마
+export const sleepRecords = sqliteTable('sleep_records', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  sleep_time: text('sleep_time').notNull(),
+  wake_time: text('wake_time').notNull(),
+  duration: real('duration').notNull(),
+  notes: text('notes'),
+  createdAt: text('created_at')
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at')
+    .notNull()
+    .$defaultFn(() => new Date().toISOString())
+})
+
+export const sleepRecordsRelations = relations(sleepRecords, ({ one }) => ({
+  user: one(users, {
+    fields: [sleepRecords.userId],
+    references: [users.id],
+  }),
+}))
+
+// 수면 기록 타입 정의
+export type SleepRecord = typeof sleepRecords.$inferSelect
+export type NewSleepRecord = typeof sleepRecords.$inferInsert
