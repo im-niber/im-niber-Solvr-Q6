@@ -97,10 +97,12 @@ pnpm build
 - `POST /api/sleep`: 새 수면 기록 추가
 - `PUT /api/sleep/:id`: 수면 기록 수정
 - `DELETE /api/sleep/:id`: 수면 기록 삭제
+- `GET /api/sleep/stats/:userid`: 특정 유저의 수면 통계 데이터 조회
+- `GET /api/sleep/advice/:userid`: 특정 유저의 수면 데이터 ai 조언
 
 ## Changelog
 
-### v1.1.0 (2024-XX-XX)
+### v1.1.0 (2025-06-08)
 
 - **New Feature: 수면 통계 기능 추가**
   - 사용자의 수면 데이터를 기반으로 한 통계 정보를 차트로 제공합니다.
@@ -108,3 +110,8 @@ pnpm build
   - 테스트를 위한 더미 데이터 생성 기능이 추가되었습니다.
 - **API Endpoint 추가:**
   - `GET /api/sleep/stats`: 특정 유저의 수면 통계 데이터 조회
+
+- **New Feature: AI 수면 조언 기능 추가 (SSE 방식 채택)**
+  - 사용자의 수면 데이터를 기반으로 AI가 개인화된 수면 건강 조언을 제공합니다.
+  - Fastify 서버에 새로운 AI 서비스와 엔드포인트(`GET /api/sleep/advice`)를 추가했습니다.
+  - 클라이언트 통계 페이지에서 AI 조언을 요청하고 실시간으로 표시하는 기능을 연동했습니다.
