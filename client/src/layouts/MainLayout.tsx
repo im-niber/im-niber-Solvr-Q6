@@ -30,6 +30,12 @@ const MainLayout = () => {
               >
                 수면 기록
               </Link>
+              <Link
+                to="/stats"
+                className="text-neutral-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                통계
+              </Link>
             </nav>
           </div>
         </div>

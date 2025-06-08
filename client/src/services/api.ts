@@ -75,6 +75,13 @@ export const sleepService = {
   },
   delete: async (id: number): Promise<void> => {
     await api.delete(`/sleep/${id}`)
+  },
+  getStats: async (userId: number): Promise<any> => {
+    const response = await api.get<ApiResponse<any>>(`/sleep/stats?userId=${userId}`)
+    if (!response.data.data) {
+      throw new Error('수면 통계 데이터를 불러오는 데 실패했습니다.')
+    }
+    return response.data.data
   }
 }
 

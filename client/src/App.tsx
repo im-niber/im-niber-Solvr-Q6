@@ -7,6 +7,7 @@ import CreateUserPage from './routes/CreateUserPage'
 import EditUserPage from './routes/EditUserPage'
 import NotFoundPage from './routes/NotFoundPage'
 import SleepRecordsPage from './routes/SleepRecordsPage'
+import StatsPage from './routes/StatsPage'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path=":id/edit" element={<EditUserPage />} />
         </Route>
         <Route path="sleep" element={<SleepRecordsPage />} />
+        <Route path="stats" element={<StatsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
