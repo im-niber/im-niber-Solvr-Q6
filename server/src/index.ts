@@ -7,6 +7,7 @@ import { UserService, createUserService } from './services/userService'
 import { SleepService, createSleepService } from './services/sleepService'
 import { createRoutes } from './routes'
 import { AppContext } from './types/context'
+import { createAiService } from './services/aiService'
 
 // Fastify 인스턴스 생성
 const fastify = Fastify({
@@ -40,7 +41,8 @@ async function start() {
     const db = await getDb()
     const context: AppContext = {
       userService: createUserService({ db }),
-      sleepService: createSleepService({ db })
+      sleepService: createSleepService({ db }),
+      aiService: createAiService()
     }
 
     // 라우트 등록
