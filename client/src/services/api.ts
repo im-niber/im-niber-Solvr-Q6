@@ -82,6 +82,13 @@ export const sleepService = {
       throw new Error('수면 통계 데이터를 불러오는 데 실패했습니다.')
     }
     return response.data.data
+  },
+  getAdvice: async (userId: number): Promise<{ advice: string }> => {
+    const response = await api.get<ApiResponse<{ advice: string }>>(`/sleep/advice?userId=${userId}`)
+    if (!response.data.data) {
+      throw new Error('AI 수면 조언을 받아오는 데 실패했습니다.')
+    }
+    return response.data.data
   }
 }
 
