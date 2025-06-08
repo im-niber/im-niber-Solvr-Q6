@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { User, CreateUserDto, UpdateUserDto } from '../types/user'
+import { SleepRecord, NewSleepRecord } from '../types/sleep'
 
 // API 응답 타입
 interface ApiResponse<T = any> {
@@ -50,6 +51,30 @@ export const userService = {
 
   delete: async (id: number): Promise<void> => {
     await api.delete(`/users/${id}`)
+  }
+}
+
+export const sleepService = {
+  getAll: async (): Promise<SleepRecord[]> => {
+    const response = await api.get<ApiResponse<SleepRecord[]>>('/sleep')
+    return response.data.data || []
+  },
+  create: async (record: NewSleepRecord): Promise<SleepRecord> => {
+    const response = await api.post<ApiResponse<SleepRecord>>('/sleep', record)
+    if (!response.data.data) {
+      throw new Error('수면 기록 생성에 실패했습니다.')
+    }
+    return response.data.data
+  },
+  update: async (id: number, record: Partial<NewSleepRecord>): Promise<SleepRecord> => {
+    const response = await api.put<ApiResponse<SleepRecord>>(`/sleep/${id}`, record)
+    if (!response.data.data) {
+      throw new Error('수면 기록 수정에 실패했습니다.')
+    }
+    return response.data.data
+  },
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/sleep/${id}`)
   }
 }
 
